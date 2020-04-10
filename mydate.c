@@ -16,6 +16,7 @@ int main(int argc ,char**argv)
 		printf("usage..");
 		exit(1);
 	}
+	FILE*fp = stdout;
 	char buf[BUFSIZE];
 	char fmtstr[BUFSIZE];
 	fmtstr[0]='\0';
@@ -25,9 +26,12 @@ int main(int argc ,char**argv)
 	int opt;
 	rettime = time(&tloc);
     tm = localtime(&rettime);
-	while((opt=getopt(argc,argv,"y:mdH:MS"))!=-1)
+	while((opt=getopt(argc,argv,"-y:mdH:MS"))!=-1)
 		switch(opt)
 		{
+			case 1:
+			fp = fopen(argv[optind-1],"w");
+			break;
 			case 'H':
 			if(strcmp(optarg,"12") == 0)
 			 strncat(fmtstr,"%I(%P) ",BUFSIZE);
@@ -38,13 +42,13 @@ int main(int argc ,char**argv)
 			if(strcmp(optarg,"ct"))
 			 strncat(fmtstr,"%y",BUFSIZE);
 			else if(strcmp(optarg,"nct"))
-				 strncat(fmtstr,"%Y",BUFSIZE);
+				 strncat(fmtstr,"%y",BUFSIZE);
 			break;
 		}
 	
 	
 	strftime(buf,BUFSIZE,fmtstr,tm);
-	puts(buf);
-
+	fputs(buf,fp);
+	fclose(fp);
 	
 }
